@@ -1,11 +1,14 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const morgan = require('morgan');
+const mongoose = require('mongoose');
 
 const app = express();
 
 const productsRoutes = require('./api/routes/products');
 const ordersRoutes = require('./api/routes/orders');
+
+mongoose.connect('mongodb://localhost:27017/server1', {useNewUrlParser: true, useUnifiedTopology: true});
 
 app.use(morgan('dev'));
 app.use(bodyParser.urlencoded({extended: false}));
@@ -21,6 +24,7 @@ app.use((req, res, next) => {
         res.header('Access-Control-Allow-Methods', 'PUT, POST, PATCH, DELETE, GET');
         return res.status(200).json({});
     }
+    next();
 });
 
 app.use('/products', productsRoutes); // Все подрауты продактс будут обработаны этим роутером
